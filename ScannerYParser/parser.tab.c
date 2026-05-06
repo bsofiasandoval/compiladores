@@ -121,24 +121,24 @@ enum yysymbol_kind_t
   YYSYMBOL_MIENTRAS = 12,                  /* MIENTRAS  */
   YYSYMBOL_HAZ = 13,                       /* HAZ  */
   YYSYMBOL_ESCRIBE = 14,                   /* ESCRIBE  */
-  YYSYMBOL_ASSIGN = 15,                    /* ASSIGN  */
-  YYSYMBOL_SEMICOLON = 16,                 /* SEMICOLON  */
-  YYSYMBOL_COLON = 17,                     /* COLON  */
-  YYSYMBOL_COMMA = 18,                     /* COMMA  */
-  YYSYMBOL_LPAREN = 19,                    /* LPAREN  */
-  YYSYMBOL_RPAREN = 20,                    /* RPAREN  */
-  YYSYMBOL_LBRACE = 21,                    /* LBRACE  */
-  YYSYMBOL_RBRACE = 22,                    /* RBRACE  */
-  YYSYMBOL_LBRACKET = 23,                  /* LBRACKET  */
-  YYSYMBOL_RBRACKET = 24,                  /* RBRACKET  */
-  YYSYMBOL_EQ = 25,                        /* EQ  */
-  YYSYMBOL_NEQ = 26,                       /* NEQ  */
-  YYSYMBOL_LT = 27,                        /* LT  */
-  YYSYMBOL_GT = 28,                        /* GT  */
-  YYSYMBOL_PLUS = 29,                      /* PLUS  */
-  YYSYMBOL_MINUS = 30,                     /* MINUS  */
-  YYSYMBOL_TIMES = 31,                     /* TIMES  */
-  YYSYMBOL_DIVIDE = 32,                    /* DIVIDE  */
+  YYSYMBOL_ASIGNACION = 15,                /* ASIGNACION  */
+  YYSYMBOL_PUNTOYCOMA = 16,                /* PUNTOYCOMA  */
+  YYSYMBOL_DOSPUNTOS = 17,                 /* DOSPUNTOS  */
+  YYSYMBOL_COMA = 18,                      /* COMA  */
+  YYSYMBOL_PARENIZQ = 19,                  /* PARENIZQ  */
+  YYSYMBOL_PARENDER = 20,                  /* PARENDER  */
+  YYSYMBOL_LLAVEIZQ = 21,                  /* LLAVEIZQ  */
+  YYSYMBOL_LLAVEDER = 22,                  /* LLAVEDER  */
+  YYSYMBOL_CORCHETEIZQ = 23,               /* CORCHETEIZQ  */
+  YYSYMBOL_CORCHETEDER = 24,               /* CORCHETEDER  */
+  YYSYMBOL_IGUAL = 25,                     /* IGUAL  */
+  YYSYMBOL_DIFERENTE = 26,                 /* DIFERENTE  */
+  YYSYMBOL_MENORQUE = 27,                  /* MENORQUE  */
+  YYSYMBOL_MAYORQUE = 28,                  /* MAYORQUE  */
+  YYSYMBOL_MAS = 29,                       /* MAS  */
+  YYSYMBOL_MENOS = 30,                     /* MENOS  */
+  YYSYMBOL_POR = 31,                       /* POR  */
+  YYSYMBOL_ENTRE = 32,                     /* ENTRE  */
   YYSYMBOL_CTE_ENT = 33,                   /* CTE_ENT  */
   YYSYMBOL_CTE_FLOT = 34,                  /* CTE_FLOT  */
   YYSYMBOL_ID = 35,                        /* ID  */
@@ -592,15 +592,16 @@ static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "PROGRAMA", "INICIO",
   "FIN", "VARS", "NULA", "ENTERO", "FLOTANTE", "SI", "SINO", "MIENTRAS",
-  "HAZ", "ESCRIBE", "ASSIGN", "SEMICOLON", "COLON", "COMMA", "LPAREN",
-  "RPAREN", "LBRACE", "RBRACE", "LBRACKET", "RBRACKET", "EQ", "NEQ", "LT",
-  "GT", "PLUS", "MINUS", "TIMES", "DIVIDE", "CTE_ENT", "CTE_FLOT", "ID",
-  "LETRERO", "$accept", "programa", "programa_p", "programa_pp", "vars",
-  "vars_p", "vars_pp", "tipo", "funcs", "funcs_p", "funcs_pp", "funcs_ppp",
-  "cuerpo", "cuerpo_p", "estatuto", "estatuto_p", "asigna", "llamada",
-  "llamada_p", "llamada_pp", "imprime", "imprime_p", "imprime_pp",
-  "condicion", "condicion_p", "ciclo", "expresion", "expresion_p", "exp",
-  "exp_p", "termino", "termino_p", "factor", "factor_p", "cte", YY_NULLPTR
+  "HAZ", "ESCRIBE", "ASIGNACION", "PUNTOYCOMA", "DOSPUNTOS", "COMA",
+  "PARENIZQ", "PARENDER", "LLAVEIZQ", "LLAVEDER", "CORCHETEIZQ",
+  "CORCHETEDER", "IGUAL", "DIFERENTE", "MENORQUE", "MAYORQUE", "MAS",
+  "MENOS", "POR", "ENTRE", "CTE_ENT", "CTE_FLOT", "ID", "LETRERO",
+  "$accept", "programa", "programa_p", "programa_pp", "vars", "vars_p",
+  "vars_pp", "tipo", "funcs", "funcs_p", "funcs_pp", "funcs_ppp", "cuerpo",
+  "cuerpo_p", "estatuto", "estatuto_p", "asigna", "llamada", "llamada_p",
+  "llamada_pp", "imprime", "imprime_p", "imprime_pp", "condicion",
+  "condicion_p", "ciclo", "expresion", "expresion_p", "exp", "exp_p",
+  "termino", "termino_p", "factor", "factor_p", "cte", YY_NULLPTR
 };
 
 static const char *
@@ -1232,14 +1233,14 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 2: /* programa: PROGRAMA ID SEMICOLON programa_p programa_pp INICIO cuerpo FIN  */
+  case 2: /* programa: PROGRAMA ID PUNTOYCOMA programa_p programa_pp INICIO cuerpo FIN  */
 #line 38 "parser.y"
     { cout << "Programa válido!" << endl; }
-#line 1239 "parser.tab.c"
+#line 1240 "parser.tab.c"
     break;
 
 
-#line 1243 "parser.tab.c"
+#line 1244 "parser.tab.c"
 
       default: break;
     }

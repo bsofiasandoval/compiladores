@@ -881,92 +881,92 @@ YY_RULE_SETUP
 case 19:
 YY_RULE_SETUP
 #line 30 "scanner.l"
-{ return EQ; }
+{ return IGUAL; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 31 "scanner.l"
-{ return NEQ; }
+{ return DIFERENTE; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 32 "scanner.l"
-{ return ASSIGN; }
+{ return ASIGNACION; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 33 "scanner.l"
-{ return LT; }
+{ return MENORQUE; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 34 "scanner.l"
-{ return GT; }
+{ return MAYORQUE; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 35 "scanner.l"
-{ return PLUS; }
+{ return MAS; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 36 "scanner.l"
-{ return MINUS; }
+{ return MENOS; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 37 "scanner.l"
-{ return TIMES; }
+{ return POR; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 38 "scanner.l"
-{ return DIVIDE; }
+{ return ENTRE; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 39 "scanner.l"
-{ return SEMICOLON; }
+{ return PUNTOYCOMA; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 40 "scanner.l"
-{ return COLON; }
+{ return DOSPUNTOS; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 41 "scanner.l"
-{ return COMMA; }
+{ return COMA; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 42 "scanner.l"
-{ return LPAREN; }
+{ return PARENIZQ; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 43 "scanner.l"
-{ return RPAREN; }
+{ return PARENDER; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 44 "scanner.l"
-{ return LBRACE; }
+{ return LLAVEIZQ; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 45 "scanner.l"
-{ return RBRACE; }
+{ return LLAVEDER; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 46 "scanner.l"
-{ return LBRACKET; }
+{ return CORCHETEIZQ; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 47 "scanner.l"
-{ return RBRACKET; }
+{ return CORCHETEDER; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP

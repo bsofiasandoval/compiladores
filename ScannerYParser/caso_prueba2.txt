@@ -1,0 +1,16 @@
+programa calificacion;
+vars
+    puntaje : entero;
+inicio
+{
+    puntaje = 85;
+    si (puntaje > 69)
+    {
+        escribe("Aprobado");
+    }
+    sino
+    {
+        escribe("Reprobado");
+    };
+}
+fin

@@ -27,24 +27,24 @@ using namespace std;
 \"[^\"]*\"      { yylval.sval = strdup(yytext); return LETRERO; }
 [a-zA-Z][a-zA-Z0-9]*  { yylval.sval = strdup(yytext); return ID; }
 
-"=="    { return EQ; }
-"!="    { return NEQ; }
-"="     { return ASSIGN; }
-"<"     { return LT; }
-">"     { return GT; }
-"+"     { return PLUS; }
-"-"     { return MINUS; }
-"*"     { return TIMES; }
-"/"     { return DIVIDE; }
-";"     { return SEMICOLON; }
-":"     { return COLON; }
-","     { return COMMA; }
-"("     { return LPAREN; }
-")"     { return RPAREN; }
-"{"     { return LBRACE; }
-"}"     { return RBRACE; }
-"["     { return LBRACKET; }
-"]"     { return RBRACKET; }
+"=="    { return IGUAL; }
+"!="    { return DIFERENTE; }
+"="     { return ASIGNACION; }
+"<"     { return MENORQUE; }
+">"     { return MAYORQUE; }
+"+"     { return MAS; }
+"-"     { return MENOS; }
+"*"     { return POR; }
+"/"     { return ENTRE; }
+";"     { return PUNTOYCOMA; }
+":"     { return DOSPUNTOS; }
+","     { return COMA; }
+"("     { return PARENIZQ; }
+")"     { return PARENDER; }
+"{"     { return LLAVEIZQ; }
+"}"     { return LLAVEDER; }
+"["     { return CORCHETEIZQ; }
+"]"     { return CORCHETEDER; }
 
 .       { printf("Error léxico: %s\n", yytext); }
 

@@ -18,23 +18,23 @@ int yylex();
 /* tokens simples */
 %token PROGRAMA INICIO FIN VARS NULA ENTERO FLOTANTE
 %token SI SINO MIENTRAS HAZ ESCRIBE
-%token ASSIGN SEMICOLON COLON COMMA
-%token LPAREN RPAREN LBRACE RBRACE LBRACKET RBRACKET
-%token EQ NEQ LT GT
-%token PLUS MINUS TIMES DIVIDE
+%token ASIGNACION PUNTOYCOMA DOSPUNTOS COMA
+%token PARENIZQ PARENDER LLAVEIZQ LLAVEDER CORCHETEIZQ CORCHETEDER
+%token IGUAL DIFERENTE MENORQUE MAYORQUE
+%token MAS MENOS POR ENTRE
 
 %token <ival> CTE_ENT
 %token <fval> CTE_FLOT
 %token <sval> ID LETRERO
 
 /* precedencia */
-%left PLUS MINUS
-%left TIMES DIVIDE
+%left MAS MENOS
+%left POR ENTRE
 
 %%
 
 programa:
-    PROGRAMA ID SEMICOLON programa_p programa_pp INICIO cuerpo FIN
+    PROGRAMA ID PUNTOYCOMA programa_p programa_pp INICIO cuerpo FIN
     { cout << "Programa válido!" << endl; }
 ;
 
@@ -53,12 +53,12 @@ vars:
 ;
 
 vars_p:
-    ID vars_pp COLON tipo SEMICOLON vars_p
+    ID vars_pp DOSPUNTOS tipo PUNTOYCOMA vars_p
     |
 ;
 
 vars_pp:
-    COMMA ID vars_pp
+    COMA ID vars_pp
     |
 ;
 
@@ -68,12 +68,12 @@ tipo:
 ;
 
 funcs:
-    NULA ID LPAREN funcs_p RPAREN LBRACE funcs_pp cuerpo RBRACE SEMICOLON
-    | tipo ID LPAREN funcs_p RPAREN LBRACE funcs_pp cuerpo RBRACE SEMICOLON
+    NULA ID PARENIZQ funcs_p PARENDER LLAVEIZQ funcs_pp cuerpo LLAVEDER PUNTOYCOMA
+    | tipo ID PARENIZQ funcs_p PARENDER LLAVEIZQ funcs_pp cuerpo LLAVEDER PUNTOYCOMA
 ;
 
 funcs_p:
-    ID COLON tipo funcs_ppp
+    ID DOSPUNTOS tipo funcs_ppp
     |
 ;
 
@@ -83,12 +83,12 @@ funcs_pp:
 ;
 
 funcs_ppp:
-    COMMA ID COLON tipo funcs_ppp
+    COMA ID DOSPUNTOS tipo funcs_ppp
     |
 ;
 
 cuerpo:
-    LBRACE cuerpo_p RBRACE
+    LLAVEIZQ cuerpo_p LLAVEDER
 ;
 
 cuerpo_p:
@@ -100,9 +100,9 @@ estatuto:
     asigna
     | condicion
     | ciclo
-    | llamada SEMICOLON
+    | llamada PUNTOYCOMA
     | imprime
-    | LBRACKET estatuto_p RBRACKET
+    | CORCHETEIZQ estatuto_p CORCHETEDER
 ;
 
 estatuto_p:
@@ -111,11 +111,11 @@ estatuto_p:
 ;
 
 asigna:
-    ID ASSIGN expresion SEMICOLON
+    ID ASIGNACION expresion PUNTOYCOMA
 ;
 
 llamada:
-    ID LPAREN llamada_p RPAREN
+    ID PARENIZQ llamada_p PARENDER
 ;
 
 llamada_p:
@@ -124,11 +124,11 @@ llamada_p:
 ;
 
 llamada_pp:
-    COMMA llamada_p
+    COMA llamada_p
 ;
 
 imprime:
-    ESCRIBE LPAREN imprime_p RPAREN SEMICOLON
+    ESCRIBE PARENIZQ imprime_p PARENDER PUNTOYCOMA
 ;
 
 imprime_p:
@@ -137,12 +137,12 @@ imprime_p:
 ;
 
 imprime_pp:
-    COMMA imprime_p
+    COMA imprime_p
     |
 ;
 
 condicion:
-    SI LPAREN expresion RPAREN cuerpo condicion_p SEMICOLON
+    SI PARENIZQ expresion PARENDER cuerpo condicion_p PUNTOYCOMA
 ;
 
 condicion_p:
@@ -151,7 +151,7 @@ condicion_p:
 ;
 
 ciclo:
-    MIENTRAS LPAREN expresion RPAREN HAZ cuerpo SEMICOLON
+    MIENTRAS PARENIZQ expresion PARENDER HAZ cuerpo PUNTOYCOMA
 ;
 
 expresion:
@@ -159,10 +159,10 @@ expresion:
 ;
 
 expresion_p:
-    GT exp
-    | LT exp
-    | NEQ exp
-    | EQ exp
+    MAYORQUE exp
+    | MENORQUE exp
+    | DIFERENTE exp
+    | IGUAL exp
     |
 ;
 
@@ -171,8 +171,8 @@ exp:
 ;
 
 exp_p:
-    PLUS termino exp_p
-    | MINUS termino exp_p
+    MAS termino exp_p
+    | MENOS termino exp_p
     |
 ;
 
@@ -181,18 +181,18 @@ termino:
 ;
 
 termino_p:
-    TIMES factor termino_p
-    | DIVIDE factor termino_p
+    POR factor termino_p
+    | ENTRE factor termino_p
     |
 ;
 
 factor:
-    LPAREN expresion RPAREN
+    PARENIZQ expresion PARENDER
     | llamada
     | ID
     | cte
-    | PLUS factor_p
-    | MINUS factor_p
+    | MAS factor_p
+    | MENOS factor_p
 ;
 
 factor_p:

@@ -1,6 +1,8 @@
 %{
 #include <iostream>
 #include <string>
+#include <vector>
+#include "funcDir.h"
 using namespace std;
 
 void yyerror(const char* s) {
@@ -15,7 +17,6 @@ int yylex();
     char* sval;
 }
 
-/* tokens simples */
 %token PROGRAMA INICIO FIN VARS NULA ENTERO FLOTANTE
 %token SI SINO MIENTRAS HAZ ESCRIBE
 %token ASIGNACION PUNTOYCOMA DOSPUNTOS COMA
@@ -26,15 +27,20 @@ int yylex();
 %token <ival> CTE_ENT
 %token <fval> CTE_FLOT
 %token <sval> ID LETRERO
+%type <sval> tipo
 
-/* precedencia */
 %left MAS MENOS
 %left POR ENTRE
 
 %%
 
 programa:
-    PROGRAMA ID PUNTOYCOMA programa_p programa_pp INICIO cuerpo FIN
+    PROGRAMA ID PUNTOYCOMA
+    {
+        dirFunc.insert("global", FuncEntry("nula"));
+        scopeActual = "global";
+    }
+    programa_p programa_pp INICIO cuerpo FIN
     { cout << "Programa válido!" << endl; }
 ;
 
@@ -53,23 +59,68 @@ vars:
 ;
 
 vars_p:
-    ID vars_pp DOSPUNTOS tipo PUNTOYCOMA vars_p
+    ID
+    {
+        idStack.push_back($1);
+    }
+    vars_pp DOSPUNTOS tipo PUNTOYCOMA
+    {
+        cerr << "Insertando variables con tipo: " << $5 << endl;
+        for (auto& id : idStack) {
+            cerr << "  Insertando: " << id << endl;
+            try {
+                dirFunc.get(scopeActual).varTable.vars.insert(id, $5);
+            } catch (runtime_error&) {
+                yyerror("Variable doblemente declarada");
+                YYABORT;
+            }
+        }
+        idStack.clear();
+    }
+    vars_p
     |
 ;
 
 vars_pp:
-    COMA ID vars_pp
+    COMA ID
+    {
+        idStack.push_back($2);
+    }
+    vars_pp
     |
 ;
 
 tipo:
-    ENTERO 
-    | FLOTANTE
+    ENTERO   { $$ = strdup("entero"); }
+    | FLOTANTE { $$ = strdup("flotante"); }
 ;
 
 funcs:
-    NULA ID PARENIZQ funcs_p PARENDER LLAVEIZQ funcs_pp cuerpo LLAVEDER PUNTOYCOMA
-    | tipo ID PARENIZQ funcs_p PARENDER LLAVEIZQ funcs_pp cuerpo LLAVEDER PUNTOYCOMA
+    NULA ID
+    {
+        try {
+            dirFunc.insert($2, FuncEntry("nula"));
+        } catch (runtime_error&) {
+            yyerror("Función doblemente declarada");
+            YYABORT;
+        }
+        scopeActual = $2;
+    }
+    PARENIZQ funcs_p PARENDER LLAVEIZQ funcs_pp cuerpo LLAVEDER PUNTOYCOMA
+    { scopeActual = "global"; }
+
+    | tipo ID
+    {
+        try {
+            dirFunc.insert($2, FuncEntry($1));
+        } catch (runtime_error&) {
+            yyerror("Función doblemente declarada");
+            YYABORT;
+        }
+        scopeActual = $2;
+    }
+    PARENIZQ funcs_p PARENDER LLAVEIZQ funcs_pp cuerpo LLAVEDER PUNTOYCOMA
+    { scopeActual = "global"; }
 ;
 
 funcs_p:
@@ -204,10 +255,11 @@ cte:
     CTE_ENT
     | CTE_FLOT
 ;
+
 %%
 
 int main() {
-    { cout << "Ingresa tu programa:" << endl; }
+    cout << "Ingresa tu programa:" << endl;
     yyparse();
     return 0;
 }

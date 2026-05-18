@@ -1,20 +1,23 @@
-// funcDir.h
+// FuncDir.h
 #pragma once
-#include <unordered_map>
 #include <string>
+#include <vector>
 #include <stdexcept>
 #include "Table.h"
 using namespace std;
 
-class VarEntry {
-    string nombre;
-    string tipo;
-}
-
-class FuncEntry {
-    string nombre;
-    string tipo;
-    Table<string, VarEntry> dirVars;
+struct VarTable {
+    Table<string, string> vars; // nombre -> tipo
 };
 
-Table<string, FuncEntry> dirFunc;
+struct FuncEntry {
+    string tipo;
+    VarTable varTable;
+
+    FuncEntry() : tipo("nula") {}
+    FuncEntry(const string& t) : tipo(t) {}
+};
+
+Table<string, FuncEntry> dirFunc; // scope , funcion
+string scopeActual = "global";
+vector<string> idStack;

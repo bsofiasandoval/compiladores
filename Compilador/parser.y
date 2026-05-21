@@ -2,13 +2,45 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "funcDir.h"
+#include "FuncDir.h"
+#include "SemanticCube.h"
+#include "QuadrupleBuilder.h"
+#include "Stack.h"
 using namespace std;
 
 void yyerror(const char* s) {
     cerr << "Error sintáctico: " << s << endl;
 }
 int yylex();
+
+SemanticCube cube;
+
+Stack<string> operators;
+Stack<string> vars;
+Stack<string> types;
+QuadrupleBuilder quadruples;
+
+void makeQuadruple() {
+    string op = operators.getTop(); operators.pop();
+    string varDer = vars.getTop(); vars.pop();
+    string tipoDer = types.getTop(); types.pop();
+    string varIzq = vars.getTop(); vars.pop();
+    string tipoIzq = types.getTop(); types.pop();
+
+   
+
+    if(op == "="){
+        quadruples.add(op, varDer, "_", varIzq);
+    } 
+    else {
+        string tipoRes = cube.validate(tipoIzq, tipoDer, op);
+        string tempNum = quadruples.newTemp(); // numero de temporal "t1, t2, etc."
+        quadruples.add(op,varIzq, varDer, tempNum);
+        vars.push(tempNum);
+        types.push(tipoRes);
+    }
+}
+
 %}
 
 %union {
@@ -162,7 +194,14 @@ estatuto_p:
 ;
 
 asigna:
-    ID ASIGNACION expresion PUNTOYCOMA
+    ID 
+    {
+        vars.push($1);
+        string t = dirFunc.get(scopeActual).varTable.vars.get($1);
+        types.push(t);
+    }
+    ASIGNACION { operators.push("=");} expresion { makeQuadruple(); }
+    PUNTOYCOMA
 ;
 
 llamada:
@@ -183,8 +222,18 @@ imprime:
 ;
 
 imprime_p:
-    expresion imprime_pp
-    | LETRERO imprime_pp
+    expresion 
+    {
+        string var = vars.getTop(); vars.pop();
+        types.pop();
+        quadruples.add("PRINT", var, "_", "_");
+    }
+    imprime_pp
+    | LETRERO
+    {
+        quadruples.add("PRINT", $1, "_","_");
+    }
+    imprime_pp
 ;
 
 imprime_pp:
@@ -210,10 +259,10 @@ expresion:
 ;
 
 expresion_p:
-    MAYORQUE exp
-    | MENORQUE exp
-    | DIFERENTE exp
-    | IGUAL exp
+    MAYORQUE { operators.push(">");} exp { makeQuadruple();}
+    | MENORQUE { operators.push("<");} exp { makeQuadruple();}
+    | DIFERENTE { operators.push("!=");}  exp { makeQuadruple();}
+    | IGUAL { operators.push("==");} exp { makeQuadruple();}
     |
 ;
 
@@ -222,8 +271,8 @@ exp:
 ;
 
 exp_p:
-    MAS termino exp_p
-    | MENOS termino exp_p
+    MAS { operators.push("+");} termino { makeQuadruple();} exp_p
+    | MENOS  { operators.push("-");} termino  { makeQuadruple();} exp_p
     |
 ;
 
@@ -232,8 +281,8 @@ termino:
 ;
 
 termino_p:
-    POR factor termino_p
-    | ENTRE factor termino_p
+    POR  { operators.push("*");} factor  { makeQuadruple();} termino_p
+    | ENTRE  { operators.push("/");}factor  { makeQuadruple();} termino_p
     |
 ;
 
@@ -241,6 +290,11 @@ factor:
     PARENIZQ expresion PARENDER
     | llamada
     | ID
+    {
+        vars.push($1);
+        string type = dirFunc.get(scopeActual).varTable.vars.get($1);
+        types.push(type);
+    }
     | cte
     | MAS factor_p
     | MENOS factor_p
@@ -253,7 +307,15 @@ factor_p:
 
 cte:
     CTE_ENT
+    {
+        vars.push(to_string($1));
+        types.push("entero");
+    }
     | CTE_FLOT
+    {
+        vars.push(to_string($1));
+        types.push("flotante");
+    }
 ;
 
 %%
@@ -261,5 +323,6 @@ cte:
 int main() {
     cout << "Ingresa tu programa:" << endl;
     yyparse();
+    quadruples.print();
     return 0;
 }

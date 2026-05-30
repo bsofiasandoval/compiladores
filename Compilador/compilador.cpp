@@ -2,12 +2,8 @@
 #include <cstdio>
 #include "QuadrupleBuilder.h"
 
-// Entry points from the generated lexer/parser
 extern int yyparse();
 extern FILE* yyin;
-
-// Quadruple table built during parsing (defined in parser.y)
-extern QuadrupleBuilder quadruples;
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -29,12 +25,6 @@ int main(int argc, char* argv[]) {
         std::cerr << "Compilación fallida." << std::endl;
         return 1;
     }
-
-    // --- Análisis semántico completado ---
-    std::cout << "\n--- Cuádruplos generados ---" << std::endl;
-    quadruples.print();
-
-    // TODO: generación de código objeto
-
+    
     return 0;
 }

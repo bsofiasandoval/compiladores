@@ -21,6 +21,7 @@ using namespace std;
 "mientras" { return MIENTRAS; }
 "haz" { return HAZ; }
 "escribe" { return ESCRIBE; }
+"regresa" { return REGRESA; }
 
 [0-9]+\.[0-9]+  { yylval.fval = atof(yytext); return CTE_FLOT; }
 [0-9]+          { yylval.ival = atoi(yytext); return CTE_ENT; }

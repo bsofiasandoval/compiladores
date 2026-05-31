@@ -3,13 +3,13 @@ FLEX   = flex
 BISON  = bison
 # -Iinclude  : finds our headers (Node, Stack, Table, FuncDir, SemanticCube, QuadrupleBuilder)
 # -I.        : finds parser.tab.h generated at root by bison
-CXXFLAGS = -Iinclude -I.
+CXXFLAGS = -Ihelpers -I.
 
 TARGET  = compilador
 SRCS    = compilador.cpp parser.tab.c lex.yy.c
-HEADERS = include/Node.h include/Stack.h include/Table.h \
-          include/FuncDir.h include/SemanticCube.h \
-          include/QuadrupleBuilder.h include/Memory.h
+HEADERS = helpers/Node.h helpers/Stack.h helpers/Table.h \
+          helpers/FuncDir.h helpers/SemanticCube.h \
+          helpers/QuadrupleBuilder.h helpers/Memory.h
 
 all: $(TARGET)
 

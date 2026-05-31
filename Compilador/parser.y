@@ -85,7 +85,10 @@ programa:
         jumps.pop();
     }
     cuerpo FIN
-    { cout << "Programa válido!" << endl; }
+    {
+        quadruples.add("END", "_", "_", "_");
+        cout << "Programa válido!" << endl;
+    }
 ;
 
 programa_p:
@@ -153,6 +156,7 @@ funcs:
     { dirFunc.get(scopeActual).startQuad = quadruples.nextQuad(); }
     LLAVEIZQ funcs_pp cuerpo LLAVEDER PUNTOYCOMA
     {
+        quadruples.add("ENDFUNC", "_", "_", "_");
         FuncEntry& f = dirFunc.get(scopeActual);
         f.localIntCount   = memory.localIntCount();
         f.localFloatCount = memory.localFloatCount();
@@ -176,6 +180,7 @@ funcs:
     { dirFunc.get(scopeActual).startQuad = quadruples.nextQuad(); }
     LLAVEIZQ funcs_pp cuerpo regresa LLAVEDER PUNTOYCOMA
     {
+        quadruples.add("ENDFUNC", "_", "_", "_");
         FuncEntry& f = dirFunc.get(scopeActual);
         f.localIntCount   = memory.localIntCount();
         f.localFloatCount = memory.localFloatCount();
@@ -191,7 +196,7 @@ funcs_p:
     {
         int addr = memory.getAddress(scopeActual, $3);
         dirFunc.get(scopeActual).varTable.vars.insert($1, VarInfo($3, addr));
-        dirFunc.get(scopeActual).params.push_back(ParamInfo($1, $3));
+        dirFunc.get(scopeActual).params.push_back(ParamInfo($3, addr));
     }
     funcs_ppp
     |
@@ -207,7 +212,7 @@ funcs_ppp:
     {
         int addr = memory.getAddress(scopeActual, $4);
         dirFunc.get(scopeActual).varTable.vars.insert($2, VarInfo($4, addr));
-        dirFunc.get(scopeActual).params.push_back(ParamInfo($2, $4));
+        dirFunc.get(scopeActual).params.push_back(ParamInfo($4, addr));
     }
     funcs_ppp
     |
@@ -283,8 +288,7 @@ llamada_p:
             yyerror(("Tipo incorrecto en parámetro " + to_string(paramCount + 1)).c_str());
             YYABORT;
         }
-        int paramAddr = dirFunc.get(callTarget).varTable.vars.get(params[paramCount].nombre).address;
-        quadruples.add("PARAM", argVal, "_", to_string(paramAddr));
+        quadruples.add("PARAM", argVal, "_", to_string(params[paramCount].address));
         paramCount++;
     }
     llamada_pp

@@ -13,9 +13,9 @@ struct VarInfo {
 };
 
 struct ParamInfo {
-    string nombre;
     string tipo;
-    ParamInfo(const string& n, const string& t) : nombre(n), tipo(t) {}
+    int address;
+    ParamInfo(const string& t, int a) : tipo(t), address(a) {}
 };
 
 struct VarTable {

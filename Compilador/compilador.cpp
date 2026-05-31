@@ -4,6 +4,7 @@
 
 extern int yyparse();
 extern FILE* yyin;
+extern QuadrupleBuilder quadruples;
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {

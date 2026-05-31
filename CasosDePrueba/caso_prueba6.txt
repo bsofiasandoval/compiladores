@@ -1,0 +1,18 @@
+programa funcConWhile;
+nula cuenta(n: entero) {
+    vars
+        i : entero;
+    {
+        i = 0;
+        mientras (i < n) haz
+        {
+            escribe(i);
+            i = i + 1;
+        };
+    }
+};
+inicio
+{
+    cuenta(5);
+}
+fin

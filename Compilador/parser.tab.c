@@ -559,17 +559,17 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    76,    76,    83,    75,    92,    93,    97,    98,   102,
-     107,   111,   106,   124,   129,   128,   133,   137,   138,   143,
-     153,   142,   166,   176,   165,   191,   190,   197,   201,   202,
-     207,   206,   213,   217,   221,   222,   226,   227,   228,   229,
-     230,   231,   235,   236,   241,   246,   246,   240,   252,   251,
-     274,   273,   291,   295,   296,   300,   305,   304,   312,   311,
-     320,   321,   325,   335,   334,   346,   345,   358,   366,   370,
-     377,   365,   387,   391,   391,   392,   392,   393,   393,   394,
-     394,   395,   399,   403,   403,   403,   404,   404,   404,   405,
-     409,   413,   413,   413,   414,   414,   414,   415,   419,   420,
-     421,   427,   428,   429,   433,   434,   438,   444
+       0,    76,    76,    83,    75,    95,    96,   100,   101,   105,
+     110,   114,   109,   127,   132,   131,   136,   140,   141,   146,
+     156,   145,   170,   180,   169,   196,   195,   202,   206,   207,
+     212,   211,   218,   222,   226,   227,   231,   232,   233,   234,
+     235,   236,   240,   241,   246,   251,   251,   245,   257,   256,
+     279,   278,   295,   299,   300,   304,   309,   308,   316,   315,
+     324,   325,   329,   339,   338,   350,   349,   362,   370,   374,
+     381,   369,   391,   395,   395,   396,   396,   397,   397,   398,
+     398,   399,   403,   407,   407,   407,   408,   408,   408,   409,
+     413,   417,   417,   417,   418,   418,   418,   419,   423,   424,
+     425,   431,   432,   433,   437,   438,   442,   448
 };
 #endif
 
@@ -1623,18 +1623,21 @@ yyreduce:
 
   case 4:
 #line 88 "parser.y"
-    { cout << "Programa válido!" << endl; ;}
+    {
+        quadruples.add("END", "_", "_", "_");
+        cout << "Programa válido!" << endl;
+    ;}
     break;
 
   case 10:
-#line 107 "parser.y"
+#line 110 "parser.y"
     {
         idStack.push_back((yyvsp[(1) - (1)].sval));
     ;}
     break;
 
   case 11:
-#line 111 "parser.y"
+#line 114 "parser.y"
     {
         for (auto& id : idStack) {
             try {
@@ -1650,24 +1653,24 @@ yyreduce:
     break;
 
   case 14:
-#line 129 "parser.y"
+#line 132 "parser.y"
     {
         idStack.push_back((yyvsp[(2) - (2)].sval));
     ;}
     break;
 
   case 17:
-#line 137 "parser.y"
+#line 140 "parser.y"
     { (yyval.sval) = strdup("entero"); ;}
     break;
 
   case 18:
-#line 138 "parser.y"
+#line 141 "parser.y"
     { (yyval.sval) = strdup("flotante"); ;}
     break;
 
   case 19:
-#line 143 "parser.y"
+#line 146 "parser.y"
     {
         try {
             dirFunc.insert((yyvsp[(2) - (2)].sval), FuncEntry("nula"));
@@ -1680,13 +1683,14 @@ yyreduce:
     break;
 
   case 20:
-#line 153 "parser.y"
+#line 156 "parser.y"
     { dirFunc.get(scopeActual).startQuad = quadruples.nextQuad(); ;}
     break;
 
   case 21:
-#line 155 "parser.y"
+#line 158 "parser.y"
     {
+        quadruples.add("ENDFUNC", "_", "_", "_");
         FuncEntry& f = dirFunc.get(scopeActual);
         f.localIntCount   = memory.localIntCount();
         f.localFloatCount = memory.localFloatCount();
@@ -1698,7 +1702,7 @@ yyreduce:
     break;
 
   case 22:
-#line 166 "parser.y"
+#line 170 "parser.y"
     {
         try {
             dirFunc.insert((yyvsp[(2) - (2)].sval), FuncEntry((yyvsp[(1) - (2)].sval)));
@@ -1711,13 +1715,14 @@ yyreduce:
     break;
 
   case 23:
-#line 176 "parser.y"
+#line 180 "parser.y"
     { dirFunc.get(scopeActual).startQuad = quadruples.nextQuad(); ;}
     break;
 
   case 24:
-#line 178 "parser.y"
+#line 182 "parser.y"
     {
+        quadruples.add("ENDFUNC", "_", "_", "_");
         FuncEntry& f = dirFunc.get(scopeActual);
         f.localIntCount   = memory.localIntCount();
         f.localFloatCount = memory.localFloatCount();
@@ -1729,25 +1734,25 @@ yyreduce:
     break;
 
   case 25:
-#line 191 "parser.y"
+#line 196 "parser.y"
     {
         int addr = memory.getAddress(scopeActual, (yyvsp[(3) - (3)].sval));
         dirFunc.get(scopeActual).varTable.vars.insert((yyvsp[(1) - (3)].sval), VarInfo((yyvsp[(3) - (3)].sval), addr));
-        dirFunc.get(scopeActual).params.push_back(ParamInfo((yyvsp[(1) - (3)].sval), (yyvsp[(3) - (3)].sval)));
+        dirFunc.get(scopeActual).params.push_back(ParamInfo((yyvsp[(3) - (3)].sval), addr));
     ;}
     break;
 
   case 30:
-#line 207 "parser.y"
+#line 212 "parser.y"
     {
         int addr = memory.getAddress(scopeActual, (yyvsp[(4) - (4)].sval));
         dirFunc.get(scopeActual).varTable.vars.insert((yyvsp[(2) - (4)].sval), VarInfo((yyvsp[(4) - (4)].sval), addr));
-        dirFunc.get(scopeActual).params.push_back(ParamInfo((yyvsp[(2) - (4)].sval), (yyvsp[(4) - (4)].sval)));
+        dirFunc.get(scopeActual).params.push_back(ParamInfo((yyvsp[(4) - (4)].sval), addr));
     ;}
     break;
 
   case 44:
-#line 241 "parser.y"
+#line 246 "parser.y"
     {
         VarInfo info = dirFunc.get(scopeActual).varTable.vars.get((yyvsp[(1) - (1)].sval));
         vars.push(to_string(info.address));
@@ -1756,17 +1761,17 @@ yyreduce:
     break;
 
   case 45:
-#line 246 "parser.y"
+#line 251 "parser.y"
     { operators.push("=");;}
     break;
 
   case 46:
-#line 246 "parser.y"
+#line 251 "parser.y"
     { makeQuadruple(); ;}
     break;
 
   case 48:
-#line 252 "parser.y"
+#line 257 "parser.y"
     {
         if (!dirFunc.contains((yyvsp[(1) - (1)].sval))) {
             yyerror(("Función no declarada: " + string((yyvsp[(1) - (1)].sval))).c_str());
@@ -1779,7 +1784,7 @@ yyreduce:
     break;
 
   case 49:
-#line 262 "parser.y"
+#line 267 "parser.y"
     {
         int expected = dirFunc.get(callTarget).params.size();
         if (paramCount != expected) {
@@ -1791,7 +1796,7 @@ yyreduce:
     break;
 
   case 50:
-#line 274 "parser.y"
+#line 279 "parser.y"
     {
         auto& params = dirFunc.get(callTarget).params;
         if (paramCount >= (int)params.size()) {
@@ -1804,14 +1809,13 @@ yyreduce:
             yyerror(("Tipo incorrecto en parámetro " + to_string(paramCount + 1)).c_str());
             YYABORT;
         }
-        int paramAddr = dirFunc.get(callTarget).varTable.vars.get(params[paramCount].nombre).address;
-        quadruples.add("PARAM", argVal, "_", to_string(paramAddr));
+        quadruples.add("PARAM", argVal, "_", to_string(params[paramCount].address));
         paramCount++;
     ;}
     break;
 
   case 56:
-#line 305 "parser.y"
+#line 309 "parser.y"
     {
         string var = vars.getTop(); vars.pop();
         types.pop();
@@ -1820,7 +1824,7 @@ yyreduce:
     break;
 
   case 58:
-#line 312 "parser.y"
+#line 316 "parser.y"
     {
         int addr = memory.getConstAddress("string", (yyvsp[(1) - (1)].sval));
         quadruples.add("PRINT", to_string(addr), "_", "_");
@@ -1828,7 +1832,7 @@ yyreduce:
     break;
 
   case 62:
-#line 326 "parser.y"
+#line 330 "parser.y"
     {
         string varExpr = vars.getTop(); vars.pop();
         types.pop();
@@ -1837,7 +1841,7 @@ yyreduce:
     break;
 
   case 63:
-#line 335 "parser.y"
+#line 339 "parser.y"
     {
         string exprRes = vars.getTop(); vars.pop();
         types.pop();
@@ -1847,7 +1851,7 @@ yyreduce:
     break;
 
   case 65:
-#line 346 "parser.y"
+#line 350 "parser.y"
     {
         int falseJump = jumps.getTop(); jumps.pop();
         jumps.push(quadruples.nextQuad());
@@ -1857,7 +1861,7 @@ yyreduce:
     break;
 
   case 66:
-#line 353 "parser.y"
+#line 357 "parser.y"
     {
         int endJump = jumps.getTop(); jumps.pop();
         quadruples.fillQuad(endJump, to_string(quadruples.nextQuad()));
@@ -1865,7 +1869,7 @@ yyreduce:
     break;
 
   case 67:
-#line 358 "parser.y"
+#line 362 "parser.y"
     {
         int falseJump = jumps.getTop(); jumps.pop();
         quadruples.fillQuad(falseJump, to_string(quadruples.nextQuad()));
@@ -1873,14 +1877,14 @@ yyreduce:
     break;
 
   case 68:
-#line 366 "parser.y"
+#line 370 "parser.y"
     {
         jumps.push(quadruples.nextQuad());
     ;}
     break;
 
   case 69:
-#line 370 "parser.y"
+#line 374 "parser.y"
     {
         string exprRes = vars.getTop(); vars.pop();
         types.pop();
@@ -1890,7 +1894,7 @@ yyreduce:
     break;
 
   case 70:
-#line 377 "parser.y"
+#line 381 "parser.y"
     {
         int falseJump = jumps.getTop(); jumps.pop();
         int loopStart = jumps.getTop(); jumps.pop();
@@ -1900,87 +1904,87 @@ yyreduce:
     break;
 
   case 73:
-#line 391 "parser.y"
+#line 395 "parser.y"
     { operators.push(">");;}
     break;
 
   case 74:
-#line 391 "parser.y"
+#line 395 "parser.y"
     { makeQuadruple();;}
     break;
 
   case 75:
-#line 392 "parser.y"
+#line 396 "parser.y"
     { operators.push("<");;}
     break;
 
   case 76:
-#line 392 "parser.y"
+#line 396 "parser.y"
     { makeQuadruple();;}
     break;
 
   case 77:
-#line 393 "parser.y"
+#line 397 "parser.y"
     { operators.push("!=");;}
     break;
 
   case 78:
-#line 393 "parser.y"
+#line 397 "parser.y"
     { makeQuadruple();;}
     break;
 
   case 79:
-#line 394 "parser.y"
+#line 398 "parser.y"
     { operators.push("==");;}
     break;
 
   case 80:
-#line 394 "parser.y"
+#line 398 "parser.y"
     { makeQuadruple();;}
     break;
 
   case 83:
-#line 403 "parser.y"
+#line 407 "parser.y"
     { operators.push("+");;}
     break;
 
   case 84:
-#line 403 "parser.y"
+#line 407 "parser.y"
     { makeQuadruple();;}
     break;
 
   case 86:
-#line 404 "parser.y"
+#line 408 "parser.y"
     { operators.push("-");;}
     break;
 
   case 87:
-#line 404 "parser.y"
+#line 408 "parser.y"
     { makeQuadruple();;}
     break;
 
   case 91:
-#line 413 "parser.y"
+#line 417 "parser.y"
     { operators.push("*");;}
     break;
 
   case 92:
-#line 413 "parser.y"
+#line 417 "parser.y"
     { makeQuadruple();;}
     break;
 
   case 94:
-#line 414 "parser.y"
+#line 418 "parser.y"
     { operators.push("/");;}
     break;
 
   case 95:
-#line 414 "parser.y"
+#line 418 "parser.y"
     { makeQuadruple();;}
     break;
 
   case 100:
-#line 422 "parser.y"
+#line 426 "parser.y"
     {
         VarInfo info = dirFunc.get(scopeActual).varTable.vars.get((yyvsp[(1) - (1)].sval));
         vars.push(to_string(info.address));
@@ -1989,7 +1993,7 @@ yyreduce:
     break;
 
   case 106:
-#line 439 "parser.y"
+#line 443 "parser.y"
     {
         int addr = memory.getConstAddress("entero", to_string((yyvsp[(1) - (1)].ival)));
         vars.push(to_string(addr));
@@ -1998,7 +2002,7 @@ yyreduce:
     break;
 
   case 107:
-#line 445 "parser.y"
+#line 449 "parser.y"
     {
         int addr = memory.getConstAddress("flotante", to_string((yyvsp[(1) - (1)].fval)));
         vars.push(to_string(addr));
@@ -2008,7 +2012,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 2012 "parser.tab.c"
+#line 2016 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2222,5 +2226,5 @@ yyreturn:
 }
 
 
-#line 452 "parser.y"
+#line 456 "parser.y"
 

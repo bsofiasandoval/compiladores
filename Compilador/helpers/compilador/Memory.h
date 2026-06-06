@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
-#include <map>
 #include <stdexcept>
+#include "../estructuras/Table.h"
 using namespace std;
 
 class MemoryManager {
@@ -27,7 +27,7 @@ class MemoryManager {
     }
 
 public:
-    map<int, string> constantTable;
+    Table<int, string> constantTable;
 
     MemoryManager() :
         globalInt(GLOBAL_INT_START),   globalFloat(GLOBAL_FLOAT_START),
@@ -59,7 +59,7 @@ public:
         if (tipo == "entero")   { checkOverflow(constInt, CONST_INT_START);   addr = constInt++;   }
         else if (tipo == "flotante") { checkOverflow(constFloat, CONST_FLOAT_START); addr = constFloat++; }
         else                    { checkOverflow(constStr, CONST_STR_START);    addr = constStr++;   }
-        constantTable[addr] = valor;
+        constantTable.insert(addr, valor);
         return addr;
     }
 

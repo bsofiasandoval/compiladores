@@ -1,0 +1,22 @@
+programa multiplesParametros;
+vars resultado : entero;
+
+entero suma3(a: entero, b: entero, c: entero) { # funcion con 3 parametros
+    vars
+        total : entero;
+    {
+        total = a + b + c;
+    }
+    regresa total;
+};
+
+inicio # main
+{
+    resultado = suma3(10, 20, 30);
+    escribe("Suma de 10 + 20 + 30:");
+    escribe(resultado);
+    resultado = suma3(1, 2, 3);
+    escribe("Suma de 1 + 2 + 3:");
+    escribe(resultado);
+}
+fin

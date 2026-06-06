@@ -1,0 +1,22 @@
+programa variableGlobal;
+vars contador : entero; # variables globales
+
+nula incrementa(n: entero) {
+    {
+        contador = contador + n;
+        escribe(contador);
+    }
+};
+
+inicio # "main"
+{
+    contador = 0;
+    escribe("Contador inicial:");
+    escribe(contador);
+    incrementa(5);
+    incrementa(3);
+    incrementa(2);
+    escribe("Contador final:");
+    escribe(contador);
+}
+fin

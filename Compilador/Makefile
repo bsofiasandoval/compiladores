@@ -1,27 +1,27 @@
 CXX    = g++
 FLEX   = flex
 BISON  = bison
-# -Iinclude  : finds our headers (Node, Stack, Table, FuncDir, SemanticCube, QuadrupleBuilder)
-# -I.        : finds parser.tab.h generated at root by bison
-CXXFLAGS = -Ihelpers -I.
+
+CXXFLAGS = -Ihelpers -Ihelpers/estructuras -Ihelpers/compilador -Ihelpers/vm -I.
 
 TARGET  = compilador
-SRCS    = compilador.cpp parser.tab.c lex.yy.c
-HEADERS = helpers/Node.h helpers/Stack.h helpers/Table.h \
-          helpers/FuncDir.h helpers/SemanticCube.h \
-          helpers/QuadrupleBuilder.h helpers/Memory.h
+SRCS    = runner.cpp parser.tab.c lex.yy.c
+HEADERS = helpers/estructuras/Node.h helpers/estructuras/Stack.h helpers/estructuras/Table.h \
+          helpers/compilador/FuncDir.h helpers/compilador/SemanticCube.h \
+          helpers/compilador/QuadrupleBuilder.h helpers/compilador/Memory.h \
+          helpers/vm/ActivationRecord.h helpers/vm/ExecutionMemory.h helpers/vm/VirtualMachine.h
 
 all: $(TARGET)
 
-# 1. Generate parser (produces parser.tab.c and parser.tab.h)
+# 1. Generar parser
 parser.tab.c parser.tab.h: parser.y
 	$(BISON) -d parser.y
 
-# 2. Generate lexer (depends on parser.tab.h for token definitions)
+# 2. Generar lexer
 lex.yy.c: scanner.l parser.tab.h
 	$(FLEX) scanner.l
 
-# 3. Compile everything — recompila si cambia cualquier header
+# 3. Compilar todo, recompila si cambia cualquier header
 $(TARGET): $(SRCS) $(HEADERS)
 	$(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET)
 

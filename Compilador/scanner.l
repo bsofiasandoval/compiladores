@@ -7,7 +7,7 @@ using namespace std;
 %%
 
 [ \t\n\r]
-"//.*"
+"#".*
 
 "programa" { return PROGRAMA; }
 "inicio" { return INICIO; }

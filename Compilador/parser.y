@@ -2,11 +2,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "FuncDir.h"
-#include "SemanticCube.h"
-#include "QuadrupleBuilder.h"
-#include "Memory.h"
-#include "Stack.h"
+#include "helpers/compilador/FuncDir.h"
+#include "helpers/compilador/SemanticCube.h"
+#include "helpers/compilador/QuadrupleBuilder.h"
+#include "helpers/compilador/Memory.h"
+#include "helpers/estructuras/Stack.h"
 using namespace std;
 
 void yyerror(const char* s) {
@@ -17,6 +17,10 @@ int yylex();
 SemanticCube cube;
 MemoryManager memory;
 
+Table<string, FuncEntry> dirFunc;
+string scopeActual = "global";
+vector<string> idStack;
+
 Stack<string> operators;
 Stack<string> vars;
 Stack<string> types;
@@ -24,6 +28,38 @@ Stack<int> jumps;
 QuadrupleBuilder quadruples;
 string callTarget = "";
 int paramCount = 0;
+
+VarInfo lookupVar(const string& name) {
+    if (scopeActual != "global" &&
+        dirFunc.get(scopeActual).varTable.vars.contains(name))
+        return dirFunc.get(scopeActual).varTable.vars.get(name);
+    if (dirFunc.get("global").varTable.vars.contains(name))
+        return dirFunc.get("global").varTable.vars.get(name);
+    throw runtime_error("Variable no declarada: " + name);
+}
+
+void registerParam(const string& name, const string& tipo) {
+    int addr = memory.getAddress(scopeActual, tipo);
+    dirFunc.get(scopeActual).varTable.vars.insert(name, VarInfo(tipo, addr));
+    dirFunc.get(scopeActual).params.push_back(ParamInfo(tipo, addr));
+}
+
+void finalizeFunc() {
+    quadruples.add("ENDFUNC", "_", "_", "_");
+    FuncEntry& f = dirFunc.get(scopeActual);
+    f.localIntCount   = memory.localIntCount();
+    f.localFloatCount = memory.localFloatCount();
+    f.tempIntCount    = memory.tempIntCount();
+    f.tempFloatCount  = memory.tempFloatCount();
+    memory.resetLocal();
+    scopeActual = "global";
+}
+
+string popExpr() {
+    string addr = vars.getTop(); vars.pop();
+    types.pop();
+    return addr;
+}
 
 void makeQuadruple() {
     string op = operators.getTop(); operators.pop();
@@ -86,8 +122,11 @@ programa:
     }
     cuerpo FIN
     {
+        FuncEntry& g = dirFunc.get("global");
+        g.tempIntCount   = memory.tempIntCount();
+        g.tempFloatCount = memory.tempFloatCount();
         quadruples.add("END", "_", "_", "_");
-        cout << "Programa válido!" << endl;
+        // cout << "Programa válido!" << endl;
     }
 ;
 
@@ -112,10 +151,11 @@ vars_p:
     }
     vars_pp DOSPUNTOS tipo PUNTOYCOMA
     {
+        string tipVar = $5;
         for (auto& id : idStack) {
             try {
-                int addr = memory.getAddress(scopeActual, $5);
-                dirFunc.get(scopeActual).varTable.vars.insert(id, VarInfo($5, addr));
+                int addr = memory.getAddress(scopeActual, tipVar);
+                dirFunc.get(scopeActual).varTable.vars.insert(id, VarInfo(tipVar, addr));
             } catch (runtime_error&) {
                 yyerror("Variable doblemente declarada");
                 YYABORT;
@@ -144,59 +184,44 @@ tipo:
 funcs:
     NULA ID
     {
+        string funcName = $2;
         try {
-            dirFunc.insert($2, FuncEntry("nula"));
+            dirFunc.insert(funcName, FuncEntry("nula"));
         } catch (runtime_error&) {
             yyerror("Función doblemente declarada");
             YYABORT;
         }
-        scopeActual = $2;
+        scopeActual = funcName;
     }
     PARENIZQ funcs_p PARENDER
     { dirFunc.get(scopeActual).startQuad = quadruples.nextQuad(); }
     LLAVEIZQ funcs_pp cuerpo LLAVEDER PUNTOYCOMA
-    {
-        quadruples.add("ENDFUNC", "_", "_", "_");
-        FuncEntry& f = dirFunc.get(scopeActual);
-        f.localIntCount   = memory.localIntCount();
-        f.localFloatCount = memory.localFloatCount();
-        f.tempIntCount    = memory.tempIntCount();
-        f.tempFloatCount  = memory.tempFloatCount();
-        memory.resetLocal();
-        scopeActual = "global";
-    }
+    { finalizeFunc(); }
 
     | tipo ID
     {
+        string tipoReturn = $1;
+        string funcName = $2;
         try {
-            dirFunc.insert($2, FuncEntry($1));
+            dirFunc.insert(funcName, FuncEntry(tipoReturn));
         } catch (runtime_error&) {
             yyerror("Función doblemente declarada");
             YYABORT;
         }
-        scopeActual = $2;
+        int retAddr = memory.getAddress("global", tipoReturn);
+        dirFunc.get(funcName).returnAddress = retAddr;
+        scopeActual = funcName;
     }
     PARENIZQ funcs_p PARENDER
     { dirFunc.get(scopeActual).startQuad = quadruples.nextQuad(); }
     LLAVEIZQ funcs_pp cuerpo regresa LLAVEDER PUNTOYCOMA
-    {
-        quadruples.add("ENDFUNC", "_", "_", "_");
-        FuncEntry& f = dirFunc.get(scopeActual);
-        f.localIntCount   = memory.localIntCount();
-        f.localFloatCount = memory.localFloatCount();
-        f.tempIntCount    = memory.tempIntCount();
-        f.tempFloatCount  = memory.tempFloatCount();
-        memory.resetLocal();
-        scopeActual = "global";
-    }
+    { finalizeFunc(); }
 ;
 
 funcs_p:
     ID DOSPUNTOS tipo
     {
-        int addr = memory.getAddress(scopeActual, $3);
-        dirFunc.get(scopeActual).varTable.vars.insert($1, VarInfo($3, addr));
-        dirFunc.get(scopeActual).params.push_back(ParamInfo($3, addr));
+        registerParam($1, $3);
     }
     funcs_ppp
     |
@@ -210,9 +235,7 @@ funcs_pp:
 funcs_ppp:
     COMA ID DOSPUNTOS tipo
     {
-        int addr = memory.getAddress(scopeActual, $4);
-        dirFunc.get(scopeActual).varTable.vars.insert($2, VarInfo($4, addr));
-        dirFunc.get(scopeActual).params.push_back(ParamInfo($4, addr));
+        registerParam($2, $4);
     }
     funcs_ppp
     |
@@ -243,8 +266,10 @@ estatuto_p:
 
 asigna:
     ID
-    {
-        VarInfo info = dirFunc.get(scopeActual).varTable.vars.get($1);
+    {   
+        VarInfo info;
+        try { info = lookupVar($1); }
+        catch (runtime_error& e) { yyerror(e.what()); YYABORT; }
         vars.push(to_string(info.address));
         types.push(info.tipo);
     }
@@ -305,11 +330,9 @@ imprime:
 ;
 
 imprime_p:
-    expresion 
+    expresion
     {
-        string var = vars.getTop(); vars.pop();
-        types.pop();
-        quadruples.add("PRINT", var, "_", "_");
+        quadruples.add("PRINT", popExpr(), "_", "_");
     }
     imprime_pp
     | LETRERO
@@ -328,19 +351,15 @@ imprime_pp:
 regresa:
     REGRESA expresion PUNTOYCOMA
     {
-        string varExpr = vars.getTop(); vars.pop();
-        types.pop();
-        quadruples.add("RETURN", varExpr, "_", scopeActual);
+        quadruples.add("RETURN", popExpr(), "_", scopeActual);
     }
 ;
 
 condicion:
     SI PARENIZQ expresion PARENDER
     {
-        string exprRes = vars.getTop(); vars.pop();
-        types.pop();
         jumps.push(quadruples.nextQuad());
-        quadruples.add("GOTOF", exprRes, "_", "_");
+        quadruples.add("GOTOF", popExpr(), "_", "_");
     }
     cuerpo condicion_p PUNTOYCOMA
 ;
@@ -372,10 +391,8 @@ ciclo:
     }
     PARENIZQ expresion PARENDER
     {
-        string exprRes = vars.getTop(); vars.pop();
-        types.pop();
         jumps.push(quadruples.nextQuad());
-        quadruples.add("GOTOF", exprRes, "_", "_");
+        quadruples.add("GOTOF", popExpr(), "_", "_");
     }
     HAZ cuerpo
     {
@@ -422,9 +439,23 @@ termino_p:
 factor:
     PARENIZQ expresion PARENDER
     | llamada
+    {
+        string tipoReturn = dirFunc.get(callTarget).tipo;
+        if(tipoReturn == "nula"){
+            yyerror("No se puede usar una funcion void en una expresion");
+            YYABORT;
+        }
+        int returnAddr = dirFunc.get(callTarget).returnAddress;
+        int tempAddr = memory.getTempAddress(tipoReturn);
+        quadruples.add("=", to_string(returnAddr), "_", to_string(tempAddr));
+        vars.push(to_string(tempAddr));
+        types.push(tipoReturn);
+    }
     | ID
     {
-        VarInfo info = dirFunc.get(scopeActual).varTable.vars.get($1);
+        VarInfo info;
+        try { info = lookupVar($1); }
+        catch (runtime_error& e) { yyerror(e.what()); YYABORT; }
         vars.push(to_string(info.address));
         types.push(info.tipo);
     }
@@ -441,13 +472,15 @@ factor_p:
 cte:
     CTE_ENT
     {
-        int addr = memory.getConstAddress("entero", to_string($1));
+        int valor = $1;
+        int addr = memory.getConstAddress("entero", to_string(valor));
         vars.push(to_string(addr));
         types.push("entero");
     }
     | CTE_FLOT
     {
-        int addr = memory.getConstAddress("flotante", to_string($1));
+        float valor = $1;
+        int addr = memory.getConstAddress("flotante", to_string(valor));
         vars.push(to_string(addr));
         types.push("flotante");
     }

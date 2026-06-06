@@ -1,0 +1,27 @@
+programa factorialEnFuncion;
+vars resultado : entero;
+
+entero factorial(n: entero) {
+    vars r, i: entero;
+    {
+        r = 1;
+        i = 1;
+        mientras (i < n + 1) haz
+        {
+            r = r * i;
+            i = i + 1;
+        };
+    }
+    regresa r;
+};
+
+inicio
+{
+    resultado = factorial(5);
+    escribe("Factorial de 5:");
+    escribe(resultado);
+    resultado = factorial(7);
+    escribe("Factorial de 7:");
+    escribe(resultado);
+}
+fin

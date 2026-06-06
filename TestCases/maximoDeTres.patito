@@ -1,0 +1,29 @@
+programa maximoDeTres;
+vars
+    resultado : entero;
+
+entero maximo(a: entero, b: entero, c: entero) {
+    vars
+        max : entero;
+    {
+        max = a;
+        si (b > max) {
+            max = b;
+        };
+        si (c > max) {
+            max = c;
+        };
+    }
+    regresa max;
+};
+
+inicio
+{
+    resultado = maximo(3, 7, 5);
+    escribe("Maximo de 3, 7, 5:");
+    escribe(resultado);
+    resultado = maximo(10, 2, 8);
+    escribe("Maximo de 10, 2, 8:");
+    escribe(resultado);
+}
+fin

@@ -1,9 +1,0 @@
-programa miProg;
-vars
-    x, y : entero;
-inicio
-{
-    x = 5 + 3;
-    escribe(x);
-}
-fin

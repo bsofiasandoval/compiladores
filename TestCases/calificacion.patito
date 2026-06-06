@@ -1,0 +1,34 @@
+programa calificacion;
+vars
+    nota : entero;
+
+nula calificacion(nota: entero) {
+    {
+        si (nota > 89) {
+            escribe("A");
+        } sino {
+            si (nota > 79) {
+                escribe("B");
+            } sino {
+                si (nota > 69) {
+                    escribe("C");
+                } sino {
+                    escribe("F");
+                };
+            };
+        };
+    }
+};
+
+inicio
+{
+    escribe("Nota 95:");
+    calificacion(95);
+    escribe("Nota 83:");
+    calificacion(83);
+    escribe("Nota 71:");
+    calificacion(71);
+    escribe("Nota 55:");
+    calificacion(55);
+}
+fin

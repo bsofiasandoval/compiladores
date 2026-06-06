@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
-#include "Table.h"
+#include "../estructuras/Table.h"
 using namespace std;
 
 struct VarInfo {
@@ -31,11 +31,12 @@ struct FuncEntry {
     int localFloatCount = 0;
     int tempIntCount    = 0;
     int tempFloatCount  = 0;
+    int returnAddress   = -1;
 
     FuncEntry() : tipo("nula") {}
     FuncEntry(const string& t) : tipo(t) {}
 };
 
-Table<string, FuncEntry> dirFunc;
-string scopeActual = "global";
-vector<string> idStack;
+extern Table<string, FuncEntry> dirFunc;
+extern string scopeActual;
+extern vector<string> idStack;

@@ -37,6 +37,8 @@ class QuadrupleBuilder {
             quadruples[index].resultado = destination;
         }
 
+        vector<Quadruple>& getQuadruples() { return quadruples; }
+
         void print(){
             for(int i = 0; i < quadruples.size(); i++){
                 cout << i << ". " << quadruples[i].operador << " " << quadruples[i].opIzq << " " << quadruples[i].opDer << " " << quadruples[i].resultado << endl;

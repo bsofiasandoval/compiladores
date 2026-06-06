@@ -1,0 +1,23 @@
+programa multiplesLlamadas;
+
+vars resultado : entero;
+
+entero cuadrado(n: entero) {
+    vars r : entero;
+    {
+        r = n * n;
+    }
+
+    regresa r;
+};
+
+inicio # main
+{
+    resultado = cuadrado(2);
+    escribe(resultado);
+    resultado = cuadrado(5);
+    escribe(resultado);
+    resultado = cuadrado(10);
+    escribe(resultado);
+}
+fin

@@ -1,10 +1,15 @@
 #include <iostream>
 #include <cstdio>
-#include "QuadrupleBuilder.h"
+#include "helpers/compilador/QuadrupleBuilder.h"
+#include "helpers/compilador/Memory.h"
+#include "helpers/compilador/FuncDir.h"
+#include "helpers/vm/VirtualMachine.h"
 
 extern int yyparse();
 extern FILE* yyin;
 extern QuadrupleBuilder quadruples;
+extern MemoryManager memory;
+
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -26,7 +31,10 @@ int main(int argc, char* argv[]) {
         std::cerr << "Compilación fallida." << std::endl;
         return 1;
     }
+
     
-    quadruples.print();
+    VirtualMachine vm(quadruples, memory.constantTable, dirFunc);
+    vm.run();
+
     return 0;
 }

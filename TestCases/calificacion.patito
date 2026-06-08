@@ -1,6 +1,5 @@
 programa calificacion;
-vars
-    nota : entero;
+vars nota : entero;
 
 nula calificacion(nota: entero) {
     {

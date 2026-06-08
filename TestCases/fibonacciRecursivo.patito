@@ -1,0 +1,29 @@
+programa fibonacciRecursivo;
+vars resultado : entero;
+
+entero fibonacci(n: entero) {
+    vars r : entero;
+    {
+        si (n == 0) {
+            r = 0;
+        } sino {
+            si (n == 1) {
+                r = 1;
+            } sino {
+                r = fibonacci(n - 1) + fibonacci(n - 2);
+            };
+        };
+    }
+    regresa r;
+};
+
+inicio
+{
+    resultado = fibonacci(8);
+    escribe("fibonacci(8):");
+    escribe(resultado);
+    resultado = fibonacci(10);
+    escribe("fibonacci(10):");
+    escribe(resultado);
+}
+fin

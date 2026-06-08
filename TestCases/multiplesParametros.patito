@@ -18,5 +18,7 @@ inicio # main
     resultado = suma3(1, 2, 3);
     escribe("Suma de 1 + 2 + 3:");
     escribe(resultado);
+
+    escribe(factorial(3));
 }
 fin

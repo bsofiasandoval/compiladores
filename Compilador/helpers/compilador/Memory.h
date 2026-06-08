@@ -20,6 +20,7 @@ class MemoryManager {
     int localInt,  localFloat;
     int tempInt,   tempFloat;
     int constInt,  constFloat, constStr;
+    Table<string, int> constLookup;
 
     void checkOverflow(int current, int start) {
         if (current - start >= RANGE_SIZE)
@@ -55,11 +56,17 @@ public:
     }
 
     int getConstAddress(const string& tipo, const string& valor) {
+        string key = tipo + "|" + valor;
+        if (constLookup.contains(key))
+            return constLookup.get(key);
+
         int addr;
-        if (tipo == "entero")   { checkOverflow(constInt, CONST_INT_START);   addr = constInt++;   }
+        if (tipo == "entero")        { checkOverflow(constInt,   CONST_INT_START);   addr = constInt++;   }
         else if (tipo == "flotante") { checkOverflow(constFloat, CONST_FLOAT_START); addr = constFloat++; }
-        else                    { checkOverflow(constStr, CONST_STR_START);    addr = constStr++;   }
+        else                         { checkOverflow(constStr,   CONST_STR_START);   addr = constStr++;   }
+
         constantTable.insert(addr, valor);
+        constLookup.insert(key, addr);
         return addr;
     }
 

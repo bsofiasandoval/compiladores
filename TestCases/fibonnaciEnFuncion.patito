@@ -1,8 +1,7 @@
 programa fibonnaciEnFuncion;
 
 nula fibonacci(n: entero) {
-    vars
-        a, b, temp, i : entero;
+    vars a, b, temp, i : entero;
     {
         a = 0;
         b = 1;

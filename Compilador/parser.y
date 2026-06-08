@@ -27,7 +27,9 @@ Stack<string> types;
 Stack<int> jumps;
 QuadrupleBuilder quadruples;
 string callTarget = "";
-int paramCount = 0;
+Stack<string> callTargetStack;
+struct ArgInfo { string addr; string tipo; };
+vector<vector<ArgInfo>> argsStack;
 
 VarInfo lookupVar(const string& name) {
     if (scopeActual != "global" &&
@@ -284,17 +286,21 @@ llamada:
             yyerror(("Función no declarada: " + string($1)).c_str());
             YYABORT;
         }
-        callTarget = $1;
-        paramCount = 0;
-        quadruples.add("ERA", "_", "_", $1);
+        callTargetStack.push($1);
+        argsStack.push_back({});
     }
     PARENIZQ llamada_p PARENDER
     {
-        int expected = dirFunc.get(callTarget).params.size();
-        if (paramCount != expected) {
+        callTarget = callTargetStack.getTop(); callTargetStack.pop();
+        auto args = argsStack.back(); argsStack.pop_back();
+        auto& declaredParams = dirFunc.get(callTarget).params;
+        if (args.size() != declaredParams.size()) {
             yyerror("Número incorrecto de parámetros");
             YYABORT;
         }
+        quadruples.add("ERA", "_", "_", callTarget);
+        for (int i = 0; i < (int)args.size(); i++)
+            quadruples.add("PARAM", args[i].addr, "_", to_string(declaredParams[i].address));
         quadruples.add("GOSUB", "_", "_", to_string(dirFunc.get(callTarget).startQuad));
     }
 ;
@@ -302,19 +308,19 @@ llamada:
 llamada_p:
     expresion
     {
-        auto& params = dirFunc.get(callTarget).params;
-        if (paramCount >= (int)params.size()) {
+        auto& declaredParams = dirFunc.get(callTargetStack.getTop()).params;
+        int idx = argsStack.back().size();
+        if (idx >= (int)declaredParams.size()) {
             yyerror("Demasiados parámetros");
             YYABORT;
         }
         string argVal  = vars.getTop();  vars.pop();
         string argTipo = types.getTop(); types.pop();
-        if (argTipo != params[paramCount].tipo) {
-            yyerror(("Tipo incorrecto en parámetro " + to_string(paramCount + 1)).c_str());
+        if (argTipo != declaredParams[idx].tipo) {
+            yyerror(("Tipo incorrecto en parámetro " + to_string(idx + 1)).c_str());
             YYABORT;
         }
-        quadruples.add("PARAM", argVal, "_", to_string(params[paramCount].address));
-        paramCount++;
+        argsStack.back().push_back({argVal, argTipo});
     }
     llamada_pp
     |

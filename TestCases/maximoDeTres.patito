@@ -1,6 +1,5 @@
 programa maximoDeTres;
-vars
-    resultado : entero;
+vars resultado : entero;
 
 entero maximo(a: entero, b: entero, c: entero) {
     vars

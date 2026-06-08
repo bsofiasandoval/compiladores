@@ -51,8 +51,6 @@ class VirtualMachine {
     ActivationRecord*        pendingFrame = nullptr;
     int ip = 0;
 
-    // ── helpers ──────────────────────────────────────────────────────────────
-
     float izq(const Quadruple& quad) { return mem.getVal(stoi(quad.opIzq)); }
     float der(const Quadruple& quad) { return mem.getVal(stoi(quad.opDer)); }
     int   res(const Quadruple& quad) { return stoi(quad.resultado);          }
@@ -83,8 +81,6 @@ class VirtualMachine {
         ip = retIp;
         mem.setFrameActivo(callStack.empty() ? nullptr : callStack.top());
     }
-
-    // ── instruction dispatch ─────────────────────────────────────────────────
 
     bool executeQuad() {
         Quadruple& quad = quads[ip];

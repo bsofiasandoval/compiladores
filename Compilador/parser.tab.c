@@ -96,9 +96,6 @@ Stack<string> vars;
 Stack<string> types;
 Stack<int> jumps;
 QuadrupleBuilder quadruples;
-// callTarget holds the most recently completed call; read by the factor rule
-// to copy the return value into a temp. callTargetStack and argsStack grow
-// together one level per nested call so inner calls don't corrupt outer ones.
 string callTarget = "";
 Stack<string> callTargetStack;
 struct ArgInfo { string addr; string tipo; };
@@ -158,7 +155,7 @@ void makeQuadruple() {
 }
 
 
-#line 162 "parser.tab.c"
+#line 159 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -684,17 +681,17 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   117,   117,   124,   116,   139,   140,   144,   145,   149,
-     154,   158,   153,   172,   177,   176,   181,   185,   186,   191,
-     202,   190,   207,   221,   206,   228,   227,   232,   236,   237,
-     242,   241,   246,   250,   254,   255,   259,   260,   261,   262,
-     263,   264,   268,   269,   274,   281,   281,   273,   287,   286,
-     315,   314,   331,   335,   336,   340,   345,   344,   350,   349,
-     358,   359,   363,   371,   370,   380,   379,   392,   400,   404,
-     409,   399,   419,   423,   423,   424,   424,   425,   425,   426,
-     426,   427,   431,   435,   435,   435,   436,   436,   436,   437,
-     441,   445,   445,   445,   446,   446,   446,   447,   451,   452,
-     466,   474,   475,   476,   480,   481,   485,   492
+       0,   114,   114,   121,   113,   136,   137,   141,   142,   146,
+     151,   155,   150,   169,   174,   173,   178,   182,   183,   188,
+     199,   187,   204,   218,   203,   225,   224,   229,   233,   234,
+     239,   238,   243,   247,   251,   252,   256,   257,   258,   259,
+     260,   261,   265,   266,   271,   278,   278,   270,   284,   283,
+     310,   309,   326,   330,   331,   335,   340,   339,   345,   344,
+     353,   354,   358,   366,   365,   375,   374,   387,   395,   399,
+     404,   394,   414,   418,   418,   419,   419,   420,   420,   421,
+     421,   422,   426,   430,   430,   430,   431,   431,   431,   432,
+     436,   440,   440,   440,   441,   441,   441,   442,   446,   447,
+     460,   468,   469,   470,   474,   475,   479,   486
 };
 #endif
 
@@ -1387,27 +1384,27 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* $@1: %empty  */
-#line 117 "parser.y"
+#line 114 "parser.y"
     {
         dirFunc.insert("global", FuncEntry("nula"));
         scopeActual = "global";
         jumps.push(quadruples.nextQuad());
         quadruples.add("GOTO", "_", "_", "_");
     }
-#line 1398 "parser.tab.c"
+#line 1395 "parser.tab.c"
     break;
 
   case 3: /* $@2: %empty  */
-#line 124 "parser.y"
+#line 121 "parser.y"
     {
         quadruples.fillQuad(jumps.getTop(), to_string(quadruples.nextQuad()));
         jumps.pop();
     }
-#line 1407 "parser.tab.c"
+#line 1404 "parser.tab.c"
     break;
 
   case 4: /* programa: PROGRAMA ID PUNTOYCOMA $@1 programa_p programa_pp INICIO $@2 cuerpo FIN  */
-#line 129 "parser.y"
+#line 126 "parser.y"
     {
         FuncEntry& g = dirFunc.get("global");
         g.tempIntCount   = memory.tempIntCount();
@@ -1415,19 +1412,19 @@ yyreduce:
         quadruples.add("END", "_", "_", "_");
         // cout << "Programa válido!" << endl;
     }
-#line 1419 "parser.tab.c"
+#line 1416 "parser.tab.c"
     break;
 
   case 10: /* $@3: %empty  */
-#line 154 "parser.y"
+#line 151 "parser.y"
     {
         idStack.push_back((yyvsp[0].sval));
     }
-#line 1427 "parser.tab.c"
+#line 1424 "parser.tab.c"
     break;
 
   case 11: /* $@4: %empty  */
-#line 158 "parser.y"
+#line 155 "parser.y"
     {
         string tipVar = (yyvsp[-1].sval);
         for (auto& id : idStack) {
@@ -1441,31 +1438,31 @@ yyreduce:
         }
         idStack.clear();
     }
-#line 1445 "parser.tab.c"
+#line 1442 "parser.tab.c"
     break;
 
   case 14: /* $@5: %empty  */
-#line 177 "parser.y"
+#line 174 "parser.y"
     {
         idStack.push_back((yyvsp[0].sval));
     }
-#line 1453 "parser.tab.c"
+#line 1450 "parser.tab.c"
     break;
 
   case 17: /* tipo: ENTERO  */
-#line 185 "parser.y"
+#line 182 "parser.y"
              { (yyval.sval) = strdup("entero"); }
-#line 1459 "parser.tab.c"
+#line 1456 "parser.tab.c"
     break;
 
   case 18: /* tipo: FLOTANTE  */
-#line 186 "parser.y"
+#line 183 "parser.y"
                { (yyval.sval) = strdup("flotante"); }
-#line 1465 "parser.tab.c"
+#line 1462 "parser.tab.c"
     break;
 
   case 19: /* $@6: %empty  */
-#line 191 "parser.y"
+#line 188 "parser.y"
     {
         string funcName = (yyvsp[0].sval);
         try {
@@ -1476,23 +1473,23 @@ yyreduce:
         }
         scopeActual = funcName;
     }
-#line 1480 "parser.tab.c"
+#line 1477 "parser.tab.c"
     break;
 
   case 20: /* $@7: %empty  */
-#line 202 "parser.y"
+#line 199 "parser.y"
     { dirFunc.get(scopeActual).startQuad = quadruples.nextQuad(); }
-#line 1486 "parser.tab.c"
+#line 1483 "parser.tab.c"
     break;
 
   case 21: /* funcs: NULA ID $@6 PARENIZQ funcs_p PARENDER $@7 LLAVEIZQ funcs_pp cuerpo LLAVEDER PUNTOYCOMA  */
-#line 204 "parser.y"
+#line 201 "parser.y"
     { finalizeFunc(); }
-#line 1492 "parser.tab.c"
+#line 1489 "parser.tab.c"
     break;
 
   case 22: /* $@8: %empty  */
-#line 207 "parser.y"
+#line 204 "parser.y"
     {
         string tipoReturn = (yyvsp[-1].sval);
         string funcName = (yyvsp[0].sval);
@@ -1506,39 +1503,39 @@ yyreduce:
         dirFunc.get(funcName).returnAddress = retAddr;
         scopeActual = funcName;
     }
-#line 1510 "parser.tab.c"
+#line 1507 "parser.tab.c"
     break;
 
   case 23: /* $@9: %empty  */
-#line 221 "parser.y"
+#line 218 "parser.y"
     { dirFunc.get(scopeActual).startQuad = quadruples.nextQuad(); }
-#line 1516 "parser.tab.c"
+#line 1513 "parser.tab.c"
     break;
 
   case 24: /* funcs: tipo ID $@8 PARENIZQ funcs_p PARENDER $@9 LLAVEIZQ funcs_pp cuerpo regresa LLAVEDER PUNTOYCOMA  */
-#line 223 "parser.y"
+#line 220 "parser.y"
     { finalizeFunc(); }
-#line 1522 "parser.tab.c"
+#line 1519 "parser.tab.c"
     break;
 
   case 25: /* $@10: %empty  */
-#line 228 "parser.y"
+#line 225 "parser.y"
     {
         registerParam((yyvsp[-2].sval), (yyvsp[0].sval));
     }
-#line 1530 "parser.tab.c"
+#line 1527 "parser.tab.c"
     break;
 
   case 30: /* $@11: %empty  */
-#line 242 "parser.y"
+#line 239 "parser.y"
     {
         registerParam((yyvsp[-2].sval), (yyvsp[0].sval));
     }
-#line 1538 "parser.tab.c"
+#line 1535 "parser.tab.c"
     break;
 
   case 44: /* $@12: %empty  */
-#line 274 "parser.y"
+#line 271 "parser.y"
     {   
         VarInfo info;
         try { info = lookupVar((yyvsp[0].sval)); }
@@ -1546,23 +1543,23 @@ yyreduce:
         vars.push(to_string(info.address));
         types.push(info.tipo);
     }
-#line 1550 "parser.tab.c"
+#line 1547 "parser.tab.c"
     break;
 
   case 45: /* $@13: %empty  */
-#line 281 "parser.y"
+#line 278 "parser.y"
                { operators.push("=");}
-#line 1556 "parser.tab.c"
+#line 1553 "parser.tab.c"
     break;
 
   case 46: /* $@14: %empty  */
-#line 281 "parser.y"
+#line 278 "parser.y"
                                                  { makeQuadruple(); }
-#line 1562 "parser.tab.c"
+#line 1559 "parser.tab.c"
     break;
 
   case 48: /* $@15: %empty  */
-#line 287 "parser.y"
+#line 284 "parser.y"
     {
         if (!dirFunc.contains((yyvsp[0].sval))) {
             yyerror(("Función no declarada: " + string((yyvsp[0].sval))).c_str());
@@ -1571,11 +1568,11 @@ yyreduce:
         callTargetStack.push((yyvsp[0].sval));
         argsStack.push_back({});
     }
-#line 1575 "parser.tab.c"
+#line 1572 "parser.tab.c"
     break;
 
   case 49: /* llamada: ID $@15 PARENIZQ llamada_p PARENDER  */
-#line 296 "parser.y"
+#line 293 "parser.y"
     {
         callTarget = callTargetStack.getTop(); callTargetStack.pop();
         auto args = argsStack.back(); argsStack.pop_back();
@@ -1584,18 +1581,16 @@ yyreduce:
             yyerror("Número incorrecto de parámetros");
             YYABORT;
         }
-        // ERA is emitted here, after all arguments are evaluated, so that
-        // nested calls (e.g. f(g(x))) don't overwrite the VM's pendingFrame.
         quadruples.add("ERA", "_", "_", callTarget);
         for (int i = 0; i < (int)args.size(); i++)
             quadruples.add("PARAM", args[i].addr, "_", to_string(declaredParams[i].address));
         quadruples.add("GOSUB", "_", "_", to_string(dirFunc.get(callTarget).startQuad));
     }
-#line 1595 "parser.tab.c"
+#line 1590 "parser.tab.c"
     break;
 
   case 50: /* $@16: %empty  */
-#line 315 "parser.y"
+#line 310 "parser.y"
     {
         auto& declaredParams = dirFunc.get(callTargetStack.getTop()).params;
         int idx = argsStack.back().size();
@@ -1611,200 +1606,199 @@ yyreduce:
         }
         argsStack.back().push_back({argVal, argTipo});
     }
-#line 1615 "parser.tab.c"
+#line 1610 "parser.tab.c"
     break;
 
   case 56: /* $@17: %empty  */
-#line 345 "parser.y"
+#line 340 "parser.y"
     {
         quadruples.add("PRINT", popExpr(), "_", "_");
     }
-#line 1623 "parser.tab.c"
+#line 1618 "parser.tab.c"
     break;
 
   case 58: /* $@18: %empty  */
-#line 350 "parser.y"
+#line 345 "parser.y"
     {
         int addr = memory.getConstAddress("string", (yyvsp[0].sval));
         quadruples.add("PRINT", to_string(addr), "_", "_");
     }
-#line 1632 "parser.tab.c"
+#line 1627 "parser.tab.c"
     break;
 
   case 62: /* regresa: REGRESA expresion PUNTOYCOMA  */
-#line 364 "parser.y"
+#line 359 "parser.y"
     {
         quadruples.add("RETURN", popExpr(), "_", scopeActual);
     }
-#line 1640 "parser.tab.c"
+#line 1635 "parser.tab.c"
     break;
 
   case 63: /* $@19: %empty  */
-#line 371 "parser.y"
+#line 366 "parser.y"
     {
         jumps.push(quadruples.nextQuad());
         quadruples.add("GOTOF", popExpr(), "_", "_");
     }
-#line 1649 "parser.tab.c"
+#line 1644 "parser.tab.c"
     break;
 
   case 65: /* $@20: %empty  */
-#line 380 "parser.y"
+#line 375 "parser.y"
     {
         int falseJump = jumps.getTop(); jumps.pop();
         jumps.push(quadruples.nextQuad());
         quadruples.add("GOTO", "_", "_", "_");
         quadruples.fillQuad(falseJump, to_string(quadruples.nextQuad()));
     }
-#line 1660 "parser.tab.c"
+#line 1655 "parser.tab.c"
     break;
 
   case 66: /* condicion_p: SINO $@20 cuerpo  */
-#line 387 "parser.y"
+#line 382 "parser.y"
     {
         int endJump = jumps.getTop(); jumps.pop();
         quadruples.fillQuad(endJump, to_string(quadruples.nextQuad()));
     }
-#line 1669 "parser.tab.c"
+#line 1664 "parser.tab.c"
     break;
 
   case 67: /* condicion_p: %empty  */
-#line 392 "parser.y"
+#line 387 "parser.y"
     {
         int falseJump = jumps.getTop(); jumps.pop();
         quadruples.fillQuad(falseJump, to_string(quadruples.nextQuad()));
     }
-#line 1678 "parser.tab.c"
+#line 1673 "parser.tab.c"
     break;
 
   case 68: /* $@21: %empty  */
-#line 400 "parser.y"
+#line 395 "parser.y"
     {
         jumps.push(quadruples.nextQuad());
     }
-#line 1686 "parser.tab.c"
+#line 1681 "parser.tab.c"
     break;
 
   case 69: /* $@22: %empty  */
-#line 404 "parser.y"
+#line 399 "parser.y"
     {
         jumps.push(quadruples.nextQuad());
         quadruples.add("GOTOF", popExpr(), "_", "_");
     }
-#line 1695 "parser.tab.c"
+#line 1690 "parser.tab.c"
     break;
 
   case 70: /* $@23: %empty  */
-#line 409 "parser.y"
+#line 404 "parser.y"
     {
         int falseJump = jumps.getTop(); jumps.pop();
         int loopStart = jumps.getTop(); jumps.pop();
         quadruples.add("GOTO", "_", "_", to_string(loopStart));
         quadruples.fillQuad(falseJump, to_string(quadruples.nextQuad()));
     }
-#line 1706 "parser.tab.c"
+#line 1701 "parser.tab.c"
     break;
 
   case 73: /* $@24: %empty  */
-#line 423 "parser.y"
+#line 418 "parser.y"
              { operators.push(">");}
-#line 1712 "parser.tab.c"
+#line 1707 "parser.tab.c"
     break;
 
   case 74: /* expresion_p: MAYORQUE $@24 exp  */
-#line 423 "parser.y"
+#line 418 "parser.y"
                                          { makeQuadruple();}
-#line 1718 "parser.tab.c"
+#line 1713 "parser.tab.c"
     break;
 
   case 75: /* $@25: %empty  */
-#line 424 "parser.y"
+#line 419 "parser.y"
                { operators.push("<");}
-#line 1724 "parser.tab.c"
+#line 1719 "parser.tab.c"
     break;
 
   case 76: /* expresion_p: MENORQUE $@25 exp  */
-#line 424 "parser.y"
+#line 419 "parser.y"
                                            { makeQuadruple();}
-#line 1730 "parser.tab.c"
+#line 1725 "parser.tab.c"
     break;
 
   case 77: /* $@26: %empty  */
-#line 425 "parser.y"
+#line 420 "parser.y"
                 { operators.push("!=");}
-#line 1736 "parser.tab.c"
+#line 1731 "parser.tab.c"
     break;
 
   case 78: /* expresion_p: DIFERENTE $@26 exp  */
-#line 425 "parser.y"
+#line 420 "parser.y"
                                               { makeQuadruple();}
-#line 1742 "parser.tab.c"
+#line 1737 "parser.tab.c"
     break;
 
   case 79: /* $@27: %empty  */
-#line 426 "parser.y"
+#line 421 "parser.y"
             { operators.push("==");}
-#line 1748 "parser.tab.c"
+#line 1743 "parser.tab.c"
     break;
 
   case 80: /* expresion_p: IGUAL $@27 exp  */
-#line 426 "parser.y"
+#line 421 "parser.y"
                                          { makeQuadruple();}
-#line 1754 "parser.tab.c"
+#line 1749 "parser.tab.c"
     break;
 
   case 83: /* $@28: %empty  */
-#line 435 "parser.y"
+#line 430 "parser.y"
         { operators.push("+");}
-#line 1760 "parser.tab.c"
+#line 1755 "parser.tab.c"
     break;
 
   case 84: /* $@29: %empty  */
-#line 435 "parser.y"
+#line 430 "parser.y"
                                         { makeQuadruple();}
-#line 1766 "parser.tab.c"
+#line 1761 "parser.tab.c"
     break;
 
   case 86: /* $@30: %empty  */
-#line 436 "parser.y"
+#line 431 "parser.y"
              { operators.push("-");}
-#line 1772 "parser.tab.c"
+#line 1767 "parser.tab.c"
     break;
 
   case 87: /* $@31: %empty  */
-#line 436 "parser.y"
+#line 431 "parser.y"
                                               { makeQuadruple();}
-#line 1778 "parser.tab.c"
+#line 1773 "parser.tab.c"
     break;
 
   case 91: /* $@32: %empty  */
-#line 445 "parser.y"
+#line 440 "parser.y"
          { operators.push("*");}
-#line 1784 "parser.tab.c"
+#line 1779 "parser.tab.c"
     break;
 
   case 92: /* $@33: %empty  */
-#line 445 "parser.y"
+#line 440 "parser.y"
                                          { makeQuadruple();}
-#line 1790 "parser.tab.c"
+#line 1785 "parser.tab.c"
     break;
 
   case 94: /* $@34: %empty  */
-#line 446 "parser.y"
+#line 441 "parser.y"
              { operators.push("/");}
-#line 1796 "parser.tab.c"
+#line 1791 "parser.tab.c"
     break;
 
   case 95: /* $@35: %empty  */
-#line 446 "parser.y"
+#line 441 "parser.y"
                                             { makeQuadruple();}
-#line 1802 "parser.tab.c"
+#line 1797 "parser.tab.c"
     break;
 
   case 99: /* factor: llamada  */
-#line 453 "parser.y"
+#line 448 "parser.y"
     {
-        // callTarget was set when llamada finished; safe to read here.
         string tipoReturn = dirFunc.get(callTarget).tipo;
         if(tipoReturn == "nula"){
             yyerror("No se puede usar una funcion void en una expresion");
@@ -1816,11 +1810,11 @@ yyreduce:
         vars.push(to_string(tempAddr));
         types.push(tipoReturn);
     }
-#line 1820 "parser.tab.c"
+#line 1814 "parser.tab.c"
     break;
 
   case 100: /* factor: ID  */
-#line 467 "parser.y"
+#line 461 "parser.y"
     {
         VarInfo info;
         try { info = lookupVar((yyvsp[0].sval)); }
@@ -1828,33 +1822,33 @@ yyreduce:
         vars.push(to_string(info.address));
         types.push(info.tipo);
     }
-#line 1832 "parser.tab.c"
+#line 1826 "parser.tab.c"
     break;
 
   case 106: /* cte: CTE_ENT  */
-#line 486 "parser.y"
+#line 480 "parser.y"
     {
         int valor = (yyvsp[0].ival);
         int addr = memory.getConstAddress("entero", to_string(valor));
         vars.push(to_string(addr));
         types.push("entero");
     }
-#line 1843 "parser.tab.c"
+#line 1837 "parser.tab.c"
     break;
 
   case 107: /* cte: CTE_FLOT  */
-#line 493 "parser.y"
+#line 487 "parser.y"
     {
         float valor = (yyvsp[0].fval);
         int addr = memory.getConstAddress("flotante", to_string(valor));
         vars.push(to_string(addr));
         types.push("flotante");
     }
-#line 1854 "parser.tab.c"
+#line 1848 "parser.tab.c"
     break;
 
 
-#line 1858 "parser.tab.c"
+#line 1852 "parser.tab.c"
 
       default: break;
     }
@@ -2047,4 +2041,4 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 501 "parser.y"
+#line 495 "parser.y"

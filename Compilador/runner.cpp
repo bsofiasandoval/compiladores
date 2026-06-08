@@ -35,6 +35,6 @@ int main(int argc, char* argv[]) {
     
     VirtualMachine vm(quadruples, memory.constantTable, dirFunc);
     vm.run();
-    // quadruples.print();
+    quadruples.print();
     return 0;
 }

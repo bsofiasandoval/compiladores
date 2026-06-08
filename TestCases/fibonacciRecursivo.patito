@@ -22,8 +22,8 @@ inicio
     resultado = fibonacci(8);
     escribe("fibonacci(8):");
     escribe(resultado);
-    resultado = fibonacci(10);
-    escribe("fibonacci(10):");
+    resultado = fibonacci(20);
+    escribe("fibonacci(20):");
     escribe(resultado);
 }
 fin
